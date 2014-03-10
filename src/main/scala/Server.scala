@@ -6,13 +6,15 @@ object Server {
 
   def main(args: Array[String]) {
     unfiltered.netty.Http(8080)
-      .handler(Palindrome)
-      .handler(Time)
+      .handler(AsyncTime)
+      .handler(CycleTime4)
+      .handler(CycleTime8)
+      .handler(CycleTime12)
+      .handler(CycleTime16)
+      .handler(SyncCycleTime)
       .run { s =>
         logger.info("starting unfiltered app at localhost on port %s"
                     .format(s.port))
-        unfiltered.util.Browser.open(
-          "http://127.0.0.1:%d/time".format(s.port))
       }
     dispatch.Http.shutdown()
   }
