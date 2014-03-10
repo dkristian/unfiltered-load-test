@@ -1,0 +1,2 @@
+Unfiltered built against Scala 2.10.3 from master at:
+https://github.com/unfiltered/unfiltered/commit/a79dae21342b270029607c8885083e3bdac04821

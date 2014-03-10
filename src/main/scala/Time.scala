@@ -1,34 +1,17 @@
 package com.example
 
+import io.netty.channel.ChannelHandler.Sharable
+
 import unfiltered.request._
 import unfiltered.response._
 
 import unfiltered.netty._
 
-/** Asynchronous plan that gets the time in a ridiculous fashion.
- *  (But imagine that it's using a vital external HTTP service to
- *  inform its response--this is a fine way to do that.) */
-object Time extends async.Plan
-  with ServerErrorResponse {
-  val logger = org.clapper.avsl.Logger(getClass)
-  
-  def intent = {
-    case req @ GET(Path("/time")) => 
-      logger.debug("GET /time")
-      import dispatch._, Defaults._
-      // the call below is non-blocking, so we return quickly
-      // and free netty's worker thread
-      for {
-        time <- Http(host("127.0.0.1", 8080).POST / "time" > as.String)
-      } {
-        // later, we respond to the request
-        req.respond(view(time))
-      }
-    case req @ POST(Path("/time")) =>
-      logger.debug("POST /time")
-      // since we don't have to do any blocking IO for this request
-      // we can call respond right way
-      req.respond(ResponseString(new java.util.Date().toString))
+trait Time {
+  def blockingTime() = {
+    val delay = scala.util.Random.nextInt(500)
+    Thread.sleep(delay)
+    new java.util.Date().toString
   }
 
   def view(time: String) = {
@@ -37,5 +20,42 @@ object Time extends async.Plan
        The current time is: { time }
      </body></html>
    )
+  }
+}
+
+@Sharable
+object FutureTime extends future.Plan with Time
+  with ServerErrorResponse {
+  val logger = org.clapper.avsl.Logger(getClass)
+  
+  implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  def intent = {
+    case req @ GET(Path("/future-time")) => 
+      scala.concurrent.Future(view(blockingTime()))
+  }
+}
+
+import cycle.{DeferralExecutor,DeferredIntent,SynchronousExecution}
+@Sharable
+object DeferredCycleTime extends cycle.Plan with Time
+  with cycle.ThreadPool
+  with ServerErrorResponse {
+  val logger = org.clapper.avsl.Logger(getClass)
+
+  def intent = {
+    case req @ GET(Path("/deferred-cycle-time")) => 
+      view(blockingTime())
+  }
+}
+
+@Sharable
+object SyncCycleTime extends cycle.Plan with Time
+  with SynchronousExecution
+  with ServerErrorResponse {
+  val logger = org.clapper.avsl.Logger(getClass)
+  
+  def intent = {
+    case req @ GET(Path("/sync-cycle-time")) => 
+      view(blockingTime())
   }
 }
