@@ -7,22 +7,23 @@ Unfortunately, the nature of the blocking IO has not been successfully replicate
 # Branches
 `master`
 * Uses `unfiltered-0.7.1`
+
 `netty4`
 * Uses unfiltered built against Scala 2.10.3 from master at: https://github.com/unfiltered/unfiltered/commit/a79dae21342b270029607c8885083e3bdac04821
 
 # Environment
-Mac Mini 2.6GHz i7
-16GB 1600 MHz DDR3
+* Mac Mini 2.6GHz i7
+* 16GB 1600 MHz DDR3
 
-OSX 10.9.2
-Scala 2.10.3
-java version "1.7.0_15"
-Java(TM) SE Runtime Environment (build 1.7.0_15-b03)
-Java HotSpot(TM) 64-Bit Server VM (build 23.7-b01, mixed mode)
+* OSX 10.9.2
+* Scala 2.10.3
+* java version "1.7.0_15"
+* Java(TM) SE Runtime Environment (build 1.7.0_15-b03)
+* Java HotSpot(TM) 64-Bit Server VM (build 23.7-b01, mixed mode)
 
 # Results
 
-Some load testing runs (with [siege][http://www.joedog.org/siege-home/]). Note that tests were run multiple times and selected results are typical of each run.
+Some load testing runs with [siege](http://www.joedog.org/siege-home/). Note that tests were run multiple times and selected results are typical of each run.
 
 ## Netty 3
 ````
@@ -39,6 +40,7 @@ Some load testing runs (with [siege][http://www.joedog.org/siege-home/]). Note t
 2014-03-10 14:44:14,   7082,     119.59,           0,       0.25,       59.22,        0.00,       14.97,    7082,       0
 **** netty3 with cycle.Plan and SynchronousExecution (http://localhost:8080/sync-cycle-time) ****
 2014-03-10 15:41:39,   7150,     119.23,           0,       0.25,       59.97,        0.00,       14.98,    7150,       0
+````
 
 ## Netty4
 ````
@@ -48,3 +50,4 @@ Some load testing runs (with [siege][http://www.joedog.org/siege-home/]). Note t
 2014-03-10 15:17:16,   7034,     119.12,           0,       0.25,       59.05,        0.00,       14.97,    7034,       0
 **** netty4 with cycle.Plan and SynchronousExecution (http://localhost:8080/sync-cycle-time) ****
 2014-03-10 15:20:14,   5761,     119.02,           0,       0.31,       48.40,        0.00,       14.96,    5761,       0
+````
